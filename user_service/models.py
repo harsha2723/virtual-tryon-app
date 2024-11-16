@@ -1,15 +1,19 @@
-from beanie import Document
 from pydantic import BaseModel, EmailStr
-
-class User(Document):
-    email: EmailStr
-    name: str
-    measurements: dict
-
-    class Settings:
-        collection = "users"
+from beanie import Document
 
 class UserCreate(BaseModel):
-    email: EmailStr
     name: str
-    measurements: dict
+    email: EmailStr
+    password: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "John Doe",
+                "email": "john.doe@example.com",
+                "password": "securepassword123"
+            }
+        }
+
+class UserDocument(UserCreate, Document):
+    pass
