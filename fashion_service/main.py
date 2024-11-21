@@ -7,17 +7,23 @@ import motor.motor_asyncio
 
 app = FastAPI()
 
-# MongoDB client setup
-client = motor.motor_asyncio.AsyncIOMotorClient("mongodb://mongo:27017")
-db = client.virtual_try_on_db
+# Example Pydantic model with updated config
+class MyModel(BaseModel):
+    name: str
 
+    class Config:
+        json_schema_extra = {
+            "example": {"name": "Alice"}
+        }
+
+# Use lifespan event handlers instead of @app.on_event
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup logic
     print("App is starting")
+    # Your startup logic
     yield
-    # Shutdown logic
     print("App is shutting down")
+    # Your shutdown logic
 
 app.router.lifespan_context = lifespan
 
