@@ -11,10 +11,15 @@ app = FastAPI()
 client = motor.motor_asyncio.AsyncIOMotorClient("mongodb://mongo:27017")
 db = client.virtual_try_on_db
 
-# Startup event to initialize the database
-@app.on_event("startup")
-async def start_db():
-    await init_beanie(database=db, document_models=[FashionItemDocument])
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup logic
+    print("App is starting")
+    yield
+    # Shutdown logic
+    print("App is shutting down")
+
+app.router.lifespan_context = lifespan
 
 # Background task to simulate image processing
 async def process_image(file: UploadFile):
